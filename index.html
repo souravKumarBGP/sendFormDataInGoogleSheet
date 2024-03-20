@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Send form data into googleSheet</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        
+        <script src="./jquerry.js"></script>
+        <script src="https://parsleyjs.org/dist/parsley.min.js"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body{
+                background: ghostwhite;
+            }
+            form{
+                width: 300px;
+                margin: 70px auto;
+                background: gainsboro;
+                padding: 10px;
+                border-radius: 5px;
+            }
+            form input, select{
+                width: 100%;
+                padding: 5px;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+            button{
+                background: green;
+                color: #fff;
+                border: 0;
+                outline: none;
+                cursor: pointer;
+                width: 100%;
+                font-size: 17px;
+                padding: 7px;
+                font-weight: bold;
+            }
+            .parsley-error{
+                background: #f8c8c8;
+                border: 2px solid red;
+            }
+            .parsley-success{
+                background: #d1fbd1;
+            }
+            .parsley-errors-list{
+                display: none;
+            }
+        </style>
+
+
+        
+    </head>
+    <body>
+
+        <div class="box">
+            <form method="post" data-parsley-validate>
+                <input type="text" placeholder="Enter Name" name="name" required />
+                <input type="email" placeholder="Enter Email" name="email" required />
+                <input type="number" placeholder="Enter Phone Number" name="phone" required />
+                <input type="password" autocomplete="on" placeholder="Enter Phone password" name="password" required />
+                <input type="time" required>
+                <input type="date" required>
+                <select name="cityName" required>
+                    <option value="" disabled >Select City</option>
+                    <option value="bhagalpur">Bhagalpur</option>
+                    <option value="bankha">Bankha</option>
+                    <option value="patna">Patna</option>
+                </select>
+                <select name="gender" required>
+                    <option value="" disabled>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">female</option>
+                    <option value="others">others</option>
+                </select>
+                
+                <button type="submit" name="subBtn">Send</button>
+                <!-- <input type="submit" id="sendBtn" value="Send" /> -->
+            </form>
+        </div>
+
+
+        <script>
+            let url = 'https://script.google.com/macros/s/AKfycbyrfeBinz5fCNLljXsB2p5K6Mv-sSShga4eLYtKO174C-lXJYHC8_ReS-E-w_UVwWyi/exec';
+            let form = document.forms[0];
+
+            form.addEventListener("submit", (event) =>{
+                event.preventDefault()
+                
+                let totalInputs = 0;
+                let validateNumber = 0;
+
+                let inputs = document.querySelectorAll("input, select");
+                for(let item of inputs){
+                    totalInputs ++;
+
+                    if(item.classList.contains("parsley-success") == true || item.value != ""){
+                        validateNumber++;
+
+                    }else{
+                        event.currentTarget.reset()
+                    }
+                }
+
+                if(totalInputs == validateNumber){
+                
+                    let userData = new FormData(form);
+                    // let subBtn = event.currentTarget.sendBtn;
+                    // subBtn.innerHTML = "Submiting...";
+                    // subBtn.style.background="orange";
+                    event.currentTarget.reset()
+                    fetch(url, {
+                        method: "post",
+                        body: userData
+                    }).then((res) => res.text())
+                    .then((finalRes) => {
+                            let a = swal("Hello world!")
+                           
+                        }
+                    )
+                    .catch(()=>{
+                        console.log("not")
+                    })
+                }
+                
+                
+
+                
+            })
+            
+        </script>
+
+
+        
+    </body>
+</html>
